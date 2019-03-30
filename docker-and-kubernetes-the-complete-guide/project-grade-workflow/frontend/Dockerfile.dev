@@ -1,0 +1,21 @@
+FROM node:alpine
+
+WORKDIR /app
+
+COPY package.json .
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start"]
+
+# Start container mapping volume locally, so changes in the local filesystem
+# causes container to automatically recompile
+#
+# -v /app/node_modules without a : means "leave this folder alone on the container
+# and do not try to map it with anything from the local machine
+#
+# -v $(pwd):/app means that everything from the current local folder (present
+# work directory) will be mapped to the /app folder in the container
+#
+# docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app 1000169af211
