@@ -11,7 +11,7 @@ const MIME_TYPE_MAP = {
 };
 
 const storage = multer.diskStorage({
-    destionation: (req, file, callback) => {
+    destination: (req, file, callback) => {
         const isValid = MIME_TYPE_MAP[file.mimetype];
         let error = new Error("Invalid Mime Type");
         if (isValid) {
@@ -26,35 +26,42 @@ const storage = multer.diskStorage({
     }
 });
 
-router.post("", multer(storage).single("image"), (req, res, next) => {
+router.post("", multer({ storage: storage }).single("image"), (req, res, next) => {
+    const url = req.protocol + "://" + req.get("host");
     const post = new Post({
         title: req.body.title,
         content: req.body.content,
+        imagePath: url + "/images/" + req.file.filename
     });
     post.save().then((createdPost) => {
         console.log("Post Created");
-        console.log(createdPost);
         res.status(201).json({
             message: "Post added successfully",
-            postId: createdPost._id,
+            post: {
+                ...createdPost,
+                id: createdPost._id
+            }
         });
     });
 });
 
-router.patch("/:id", (req, res, next) => {
+router.patch("/:id", multer({ storage: storage }).single("image"), (req, res, next) => {
+    let imagePath = req.body.imagePath;
+    if (req.file) {
+        const url = req.protocol + "://" + req.get("host");
+        imagePath = url + "/images/" + req.file.filename;
+    }
     const post = new Post({
         _id: req.params.id,
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        imagePath
     });
-    console.log("To be updated");
-    console.log(post);
     Post.updateOne({
         _id: req.params.id
     }, post)
         .then((result) => {
             console.log("Post Updated");
-            console.log(result);
             res.status(200).json({
                 message: "Update successful!",
             });
@@ -64,7 +71,6 @@ router.patch("/:id", (req, res, next) => {
 router.get("", (req, res, next) => {
     Post.find().then((documents) => {
         console.log("Posts Fetched");
-        console.log(documents);
         res.status(200).json({
             message: "Posts fetched successfully!",
             posts: documents,
@@ -76,7 +82,6 @@ router.get("/:id", (req, res, next) => {
     Post.findById(req.params.id).then((post) => {
         if (post) {
             console.log("Post Fetched");
-            console.log(post);
             res.status(200).json(post);
         } else {
             console.log("PostId = " + req.params.id + " not found");
@@ -92,7 +97,6 @@ router.delete("/:id", (req, res, next) => {
         _id: req.params.id,
     }).then((result) => {
         console.log("Post Deleted");
-        console.log(result);
         res.status(200).json({
             message: "Post deleted!",
         });
