@@ -34,7 +34,6 @@ router.post("", multer({ storage: storage }).single("image"), (req, res, next) =
         imagePath: url + "/images/" + req.file.filename
     });
     post.save().then((createdPost) => {
-        console.log("Post Created");
         res.status(201).json({
             message: "Post added successfully",
             post: {
@@ -61,7 +60,6 @@ router.patch("/:id", multer({ storage: storage }).single("image"), (req, res, ne
         _id: req.params.id
     }, post)
         .then((result) => {
-            console.log("Post Updated");
             res.status(200).json({
                 message: "Update successful!",
             });
@@ -84,7 +82,6 @@ router.get("", (req, res, next) => {
             return Post.countDocuments();
         })
         .then((count) => {
-            console.log("Posts Fetched");
             res.status(200).json({
                 message: "Posts fetched successfully!",
                 posts: fetchedPosts,
@@ -96,10 +93,8 @@ router.get("", (req, res, next) => {
 router.get("/:id", (req, res, next) => {
     Post.findById(req.params.id).then((post) => {
         if (post) {
-            console.log("Post Fetched");
             res.status(200).json(post);
         } else {
-            console.log("PostId = " + req.params.id + " not found");
             res.status(404).json({
                 message: "Post not found!"
             });
@@ -111,7 +106,6 @@ router.delete("/:id", (req, res, next) => {
     Post.deleteOne({
         _id: req.params.id,
     }).then((result) => {
-        console.log("Post Deleted");
         res.status(200).json({
             message: "Post deleted!",
         });
