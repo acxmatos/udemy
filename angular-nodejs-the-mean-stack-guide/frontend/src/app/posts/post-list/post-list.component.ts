@@ -21,6 +21,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = false;
   userIsAuthenticated = false;
+  userId: string;
 
   // Pagination
   totalPosts = 0;
@@ -47,10 +48,12 @@ export class PostListComponent implements OnInit, OnDestroy {
         this.totalPosts = postData.postCount;
       });
     this.userIsAuthenticated = this.authService.getIsAuth();
+    this.userId = this.authService.getUserId();
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated) => {
         this.userIsAuthenticated = isAuthenticated;
+        this.userId = this.authService.getUserId();
       });
   }
 
