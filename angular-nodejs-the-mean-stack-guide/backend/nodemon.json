@@ -1,0 +1,7 @@
+{
+  "env": {
+    "MONGO_DB_HOST": "sandbox-6xcse.mongodb.net",
+    "MONGO_DB_DATABASE": "udemy-mean-course",
+    "JWT_KEY": "secret_this_should_be_longer"
+  }
+}

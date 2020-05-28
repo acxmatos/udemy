@@ -9,7 +9,7 @@ const userRoutes = require("./routes/user");
 
 const app = express();
 
-fs.readFile("mongo_credentials.txt", "utf8", (err, data) => {
+fs.readFile("mongo_credentials.txt", "utf8", (err, mongoAuthData) => {
   if (err) {
     console.error(
       "Unable to open mongo credentials file. Impossible to continue!"
@@ -18,9 +18,9 @@ fs.readFile("mongo_credentials.txt", "utf8", (err, data) => {
   }
 
   // Remove newlines
-  data = data.replace(/\r?\n|\r/g, "");
+  mongoAuthData = mongoAuthData.replace(/\r?\n|\r/g, "");
 
-  const cnn = `mongodb+srv://${data}@sandbox-6xcse.mongodb.net/udemy-mean-course?w=majority`;
+  const cnn = `mongodb+srv://${mongoAuthData}@${process.env.MONGO_DB_HOST}/${process.env.MONGO_DB_DATABASE}?w=majority`;
 
   console.log(cnn);
 
