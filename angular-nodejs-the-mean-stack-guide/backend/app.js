@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const postsRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 
 const app = express();
 
@@ -19,8 +20,7 @@ fs.readFile("mongo_credentials.txt", "utf8", (err, data) => {
   // Remove newlines
   data = data.replace(/\r?\n|\r/g, "");
 
-  const cnn =
-    `mongodb+srv://${data}@sandbox-6xcse.mongodb.net/udemy-mean-course?retryWrites=true&w=majority`;
+  const cnn = `mongodb+srv://${data}@sandbox-6xcse.mongodb.net/udemy-mean-course?w=majority`;
 
   console.log(cnn);
 
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -55,5 +55,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", postsRoutes);
+app.use("/api/user", userRoutes);
 
 module.exports = app;
