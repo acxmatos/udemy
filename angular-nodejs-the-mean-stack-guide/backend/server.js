@@ -33,6 +33,7 @@ const onError = (error) => {
       console.error(bind + " is already in use");
       process.exit(1);
     default:
+      console.error(error);
       throw error;
   }
 };
@@ -41,9 +42,10 @@ const onListening = () => {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + port;
   debug("Listening on " + bind);
+  console.log("Listening on " + bind);
 };
 
-const port = normalizedPort(process.env.PORT | "3000");
+const port = normalizedPort(process.env.PORT || "3000");
 app.set("port", port);
 
 const server = http.createServer(app);
