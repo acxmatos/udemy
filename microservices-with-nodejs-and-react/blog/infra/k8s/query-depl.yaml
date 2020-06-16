@@ -1,0 +1,31 @@
+apiVersion: apps/v1 # bucket for Deployment kind
+kind: Deployment
+metadata:
+  name: query-depl
+spec:
+  replicas: 1 # number of pods running a particular image
+  selector: # take a look at all the pods created
+    matchLabels: # find the pods with a matching label
+      app: query # match only pods with label of "app: query"
+  template: # specify the exact configuration to be deployed
+    metadata:
+      labels: # the configuration will create a label
+        app: query # with the value of "app: query"
+    spec:
+      containers: # specify the containers to be deployed
+        - name: query
+          image: acxmatos/query
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  selector:
+    app: query
+  type: ClusterIP # default if not specified
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

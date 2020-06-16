@@ -1,0 +1,31 @@
+apiVersion: apps/v1 # bucket for Deployment kind
+kind: Deployment
+metadata:
+  name: moderation-depl
+spec:
+  replicas: 1 # number of pods running a particular image
+  selector: # take a look at all the pods created
+    matchLabels: # find the pods with a matching label
+      app: moderation # match only pods with label of "app: moderation"
+  template: # specify the exact configuration to be deployed
+    metadata:
+      labels: # the configuration will create a label
+        app: moderation # with the value of "app: moderation"
+    spec:
+      containers: # specify the containers to be deployed
+        - name: moderation
+          image: acxmatos/moderation
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-srv
+spec:
+  selector:
+    app: moderation
+  type: ClusterIP # default if not specified
+  ports:
+    - name: moderation
+      protocol: TCP
+      port: 4003
+      targetPort: 4003

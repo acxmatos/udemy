@@ -8,9 +8,19 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+const eventBusBaseUrl = "http://event-bus-srv:4005";
+const eventBusEventsUrl = `${eventBusBaseUrl}/events`;
+
 const posts = {};
 
+const debugLog = (msg) => {
+  console.log(`[app] ${new Date().toISOString()} - ${msg}`);
+};
+
 app.get("/posts", (req, res) => {
+  debugLog(
+    `All posts requested. Sent a total of ${Object.keys(posts).length} post(s)`
+  );
   res.send(posts);
 });
 
@@ -23,23 +33,29 @@ app.post("/posts", async (req, res) => {
     title,
   };
 
-  await axios.post("http://localhost:4005/events", {
-    type: "PostCreated",
-    data: {
-      id,
-      title,
-    }
-  });
+  await axios
+    .post(eventBusEventsUrl, {
+      type: "PostCreated",
+      data: {
+        id,
+        title,
+      },
+    })
+    .then((res) => {
+      debugLog("Triggered event: PostCreated");
+    });
 
   res.status(201).send(posts[id]);
 });
 
 app.post("/events", (req, res) => {
-    console.log("Received Event", req.body.type);
+  debugLog("Received Event", req.body.type);
+  debugLog(`We don't care about ${req.body.type} event type. Ignoring`);
 
-    res.send({});
+  res.send({});
 });
 
 app.listen(4000, () => {
-  console.log("Listening on port 4000");
+  debugLog("v1");
+  debugLog("Listening on port 4000");
 });
