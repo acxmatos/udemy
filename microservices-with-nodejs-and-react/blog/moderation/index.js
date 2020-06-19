@@ -43,6 +43,6 @@ app.post("/events", async (req, res) => {
 });
 
 app.listen(4003, () => {
-  debugLog("v1");
+  debugLog("v2");
   debugLog("Listening on port 4003");
 });

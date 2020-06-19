@@ -38,6 +38,6 @@ app.get("/events", (req, res) => {
 });
 
 app.listen(4005, () => {
-  debugLog("v1");
+  debugLog("v2");
   debugLog("Listening on port 4005");
 });

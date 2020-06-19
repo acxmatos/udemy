@@ -66,7 +66,7 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(4002, async () => {
-  debugLog("v1");
+  debugLog("v2");
   debugLog("Listening on port 4002");
 
   const res = await axios.get(eventBusEventsUrl);

@@ -1,0 +1,31 @@
+apiVersion: apps/v1 # bucket for Deployment kind
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1 # number of pods running a particular image
+  selector: # take a look at all the pods created
+    matchLabels: # find the pods with a matching label
+      app: client # match only pods with label of "app: client"
+  template: # specify the exact configuration to be deployed
+    metadata:
+      labels: # the configuration will create a label
+        app: client # with the value of "app: client"
+    spec:
+      containers: # specify the containers to be deployed
+        - name: client
+          image: acxmatos/client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  type: ClusterIP # default if not specified
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
