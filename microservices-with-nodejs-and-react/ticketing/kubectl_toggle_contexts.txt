@@ -1,0 +1,3 @@
+kubectl config get-contexts
+kubectl config use-context gke_ticketing-dev-280815_us-central1-c_ticketing-dev   
+kubectl config use-context minikube                    
