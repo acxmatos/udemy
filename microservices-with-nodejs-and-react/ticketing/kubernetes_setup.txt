@@ -1,0 +1,12 @@
+# Create secret to store jwt signing key
+kubectl create secret generic jwt-secret --from-literal JWT_KEY=my_super_secret_jwt_key
+
+# Enable ingress service on minikube
+minikube addons enable ingress
+
+# List current contexts setup for kubectl client
+kubectl config get-contexts
+
+# Toggle between kubectl contexts
+kubectl config use-context gke_ticketing-dev-280815_us-central1-c_ticketing-dev
+kubectl config use-context minikube

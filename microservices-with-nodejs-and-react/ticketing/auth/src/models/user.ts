@@ -31,6 +31,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+}, {
+  toJSON: {
+    transform(doc, ret) {
+      
+      // Reassign _id to id
+      ret.id = ret._id;
+      delete ret._id;
+
+      // Delete password
+      delete ret.password;
+      
+      // Can be used to delete __v
+      // We chose setting the versionKey
+      // property (below), which does
+      // exactly what we need
+      // delete ret.__v;
+    },
+    versionKey: false
+  }
 });
 
 // We use function syntax (instead of an arrow function)
