@@ -1,43 +1,6 @@
-import express from "express";
-import "express-async-errors"; // enables async error throwing without calling next
-import { json } from "body-parser";
 import mongoose from "mongoose";
-import cookieSession from "cookie-session";
 
-import { currentUserRouter } from "./routes/current-user";
-import { signinRouter } from "./routes/signin";
-import { signoutRouter } from "./routes/signout";
-import { signupRouter } from "./routes/signup";
-
-import { errorHandler } from "./middlewares/error-handler";
-import { NotFoundError } from "./errors/not-found-error";
-
-// Express
-const app = express();
-app.set("trust proxy", true); // trusts nginx proxy coming through ingress
-
-// Middlewares - Packages/Builtins
-app.use(json());
-app.use(
-  cookieSession({
-    signed: false,
-    secure: true, // cookies only over https
-  })
-);
-
-// Middlewares - Custom
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutRouter);
-app.use(signupRouter);
-
-// Handles any invalid route not found in any
-// of the router handlers set above
-app.all("*", async () => {
-  throw new NotFoundError();
-});
-
-app.use(errorHandler);
+import { app } from "./app";
 
 // Created a separated function to use async/await in old versions of Node
 // New versions allow to use await on a top level (no need to use a function)
