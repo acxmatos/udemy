@@ -19,3 +19,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: acxmatos/client
+      # image: us.gcr.io/ticketing-dev-280815/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .

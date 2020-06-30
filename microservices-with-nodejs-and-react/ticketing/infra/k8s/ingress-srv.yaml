@@ -14,3 +14,7 @@ spec:
             backend:
               serviceName: auth-srv
               servicePort: 3000
+          - path: /?(.*) # this should be the LAST entry!
+            backend:
+              serviceName: client-srv
+              servicePort: 3000

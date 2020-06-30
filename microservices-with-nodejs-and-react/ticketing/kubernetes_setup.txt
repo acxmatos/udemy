@@ -10,3 +10,11 @@ kubectl config get-contexts
 # Toggle between kubectl contexts
 kubectl config use-context gke_ticketing-dev-280815_us-central1-c_ticketing-dev
 kubectl config use-context minikube
+
+# For lecture 211. Cross Namespace Service Communication
+# If you are running kubernates on Linux/Ubuntu, after you enable ingress running the command "minikube addons enable ingress", you must expose the service, that is not created.
+# You can do this by running the command:
+kubectl expose deployment ingress-nginx-controller --target-port=80 --type=ClusterIP -n kube-system
+#
+# After it would be possible to access the nginx-ingress-controller setting up the url like this:
+# http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser
