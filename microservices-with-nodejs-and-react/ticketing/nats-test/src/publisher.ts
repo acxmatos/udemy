@@ -1,26 +1,23 @@
 import nats from "node-nats-streaming";
 
+import { TicketCreatedPublisher } from "./events/ticket-created-publisher";
+
 console.clear();
 
 // stan = client in NATS terminology
 // it is "nats" backwards (really smart!)
 const stan = nats.connect("ticketing", "abc", {
-  url: "http://localhost:4222"
+  url: "http://localhost:4222",
 });
 
-stan.on("connect", () => {
+stan.on("connect", async () => {
   console.log("Publisher connected to NATS");
 
-  // we can't publish objects to NATS (only strings are allowed)
-  // so we need to convert the object to a JSON string
-  // data is refered as "message" in NATS world
-  const data = JSON.stringify({
+  const publisher = new TicketCreatedPublisher(stan);
+  await publisher.publish({
     id: "123",
     title: "Title",
-    price: 20
-  });
-
-  stan.publish("ticket:created", data, () => {
-    console.log("Event published");
+    price: 20,
+    userId: "987"
   });
 });
