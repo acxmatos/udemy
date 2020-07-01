@@ -18,3 +18,7 @@ kubectl expose deployment ingress-nginx-controller --target-port=80 --type=Clust
 #
 # After it would be possible to access the nginx-ingress-controller setting up the url like this:
 # http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser
+
+# Expose a pod to the outside world using port forward (STRICTLY FOR DEVELOPMENT PURPOSES!)
+# P.S.: command will hang, need to leave it running
+kubectl port-forward <pod_name> local_port:pod_port
