@@ -8,6 +8,8 @@ import {
 } from "@acxmatos-gittix/common";
 
 import { Ticket } from "../models/ticket";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -39,7 +41,17 @@ router.put(
       title: req.body.title,
       price: req.body.price,
     });
+
+    // Save to MongoDB
     await ticket.save();
+
+    // Send notification event of ticket updated
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.send(ticket);
   }

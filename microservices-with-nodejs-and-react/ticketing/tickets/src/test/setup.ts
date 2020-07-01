@@ -10,6 +10,10 @@ declare global {
   }
 }
 
+// Looks for an identical filename on __mocks__ folder
+// and use it as an import statement
+jest.mock("../nats-wrapper");
+
 let mongo: any;
 
 beforeAll(async () => {
@@ -26,6 +30,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  jest.clearAllMocks();
   const collections = await mongoose.connection.db.collections();
 
   for (let collection of collections) {
