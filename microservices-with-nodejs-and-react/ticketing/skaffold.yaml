@@ -37,3 +37,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: acxmatos/orders
+      # image: us.gcr.io/ticketing-dev-280815/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
