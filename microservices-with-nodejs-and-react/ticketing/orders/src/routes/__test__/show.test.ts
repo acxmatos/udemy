@@ -9,6 +9,7 @@ it("fetches the order", async () => {
 
   // Create a ticket
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "Title",
     price: 20,
   });
@@ -44,6 +45,7 @@ it("returns an error if the order does not exist", async () => {
 it("returns an error if one user tries to fetch another users order", async () => {
   // Create a ticket
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "Title",
     price: 20,
   });
