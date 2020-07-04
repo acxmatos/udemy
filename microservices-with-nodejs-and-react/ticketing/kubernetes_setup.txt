@@ -19,6 +19,9 @@ skaffold dev
 # Create secret to store jwt signing key
 kubectl create secret generic jwt-secret --from-literal JWT_KEY=my_super_secret_jwt_key
 
+# Create secret to store stripe secret key
+kubectl create secret generic stripe-secret --from-literal STRIPE_KEY=my_super_secret_stripe_key
+
 # Enable ingress service on minikube
 minikube addons enable ingress
 

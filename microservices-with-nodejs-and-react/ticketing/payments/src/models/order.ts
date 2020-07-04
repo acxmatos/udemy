@@ -1,48 +1,47 @@
 import mongoose from "mongoose";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
-import { OrderStatus } from "@acxmatos-gittix/common";
 
-import { TicketDoc } from "./ticket";
+import { OrderStatus } from "@acxmatos-gittix/common";
 
 export { OrderStatus };
 
 interface OrderAttrs {
-  userId: string;
+  id: string;
   status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
+  version: number;
+  userId: string;
+  price: number;
 }
 
 interface OrderDoc extends mongoose.Document {
+  status: OrderStatus;
   version: number;
   userId: string;
-  status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
+  price: number;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
+  findByEvent(event: {
+    id: string;
+    version: number;
+  }): Promise<OrderDoc | null>;
 }
 
 const orderSchema = new mongoose.Schema(
   {
-    userId: {
-      type: String,
-      required: true,
-    },
     status: {
       type: String,
       required: true,
       enum: Object.values(OrderStatus), // validate against OrderStatus
-      default: OrderStatus.Created,
     },
-    expiresAt: {
-      type: mongoose.Schema.Types.Date,
+    userId: {
+      type: String,
+      required: true,
     },
-    ticket: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Ticket",
+    price: {
+      type: Number,
+      required: true,
     },
   },
   {
@@ -59,7 +58,20 @@ orderSchema.set("versionKey", "version");
 orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
-  return new Order(attrs);
+  return new Order({
+    _id: attrs.id,
+    status: attrs.status,
+    version: attrs.version,
+    userId: attrs.userId,
+    price: attrs.price,
+  });
+};
+
+orderSchema.statics.findByEvent = (event: { id: string; version: number }) => {
+  return Order.findOne({
+    _id: event.id,
+    version: event.version - 1,
+  });
 };
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);

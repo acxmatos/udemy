@@ -2,10 +2,8 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
-import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 // Created a separated function to use async/await in old versions of Node
 // New versions allow to use await on a top level (no need to use a function)
@@ -30,6 +28,10 @@ const start = async () => {
     throw new Error("NATS_CLUSTER_ID must be defined");
   }
 
+  if (!process.env.STRIPE_KEY) {
+    throw new Error("STRIPE_KEY must be defined");
+  }
+
   try {
     // --- NATS ---
     //
@@ -49,10 +51,8 @@ const start = async () => {
     process.on("SIGTERM", () => natsWrapper.client.close());
     //
     // Listeners
-    new TicketCreatedListener(natsWrapper.client).listen();
-    new TicketUpdatedListener(natsWrapper.client).listen();
-    new ExpirationCompleteListener(natsWrapper.client).listen();
-    new PaymentCreatedListener(natsWrapper.client).listen();
+    new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
 
     // --- Mongo DB ---
     //
