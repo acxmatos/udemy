@@ -1,3 +1,21 @@
+# ------------------------------------
+# Normal project initialization
+# ------------------------------------
+# Start local minikube
+minikube start
+
+# This is needed to configure local docker cli to connect to the minikube docker daemon, instead of local daemon.
+# IMPORTANT 1: you need to rebuild all images into minikube after running this command, as the local docker daemon images WILL NOT be available inside minikube
+# IMPORTANT 2: if running this command from inside a script, it should run with "dot space" notation (. my_script.sh), in order to the variables to be set in the current shell
+eval $(minikube docker-env)
+
+# Start skaffold on the project root folder
+skaffold dev
+
+# ------------------------------------
+# Relevant commands
+# ------------------------------------
+
 # Create secret to store jwt signing key
 kubectl create secret generic jwt-secret --from-literal JWT_KEY=my_super_secret_jwt_key
 

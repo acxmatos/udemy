@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
 // Created a separated function to use async/await in old versions of Node
 // New versions allow to use await on a top level (no need to use a function)
@@ -35,6 +37,7 @@ const start = async () => {
       process.env.NATS_CLIENT_ID,
       process.env.NATS_URL
     );
+    //
     // Graceful shutdown
     natsWrapper.client.on("close", () => {
       console.log("NATS connection closed!");
@@ -42,6 +45,10 @@ const start = async () => {
     });
     process.on("SIGINT", () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
+    //
+    // Listeners
+    new OrderCreatedListener(natsWrapper.client).listen();
+    new OrderCancelledListener(natsWrapper.client).listen();
 
     // --- Mongo DB ---
     //
