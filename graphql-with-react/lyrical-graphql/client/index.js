@@ -11,6 +11,7 @@ import SongCreate from './components/SongCreate';
 import SongDetail from './components/SongDetail';
 
 const client = new ApolloClient({
+  // Documentation: https://www.apollographql.com/docs/react/caching/cache-configuration/
   dataIdFromObject: obj => obj.id
 });
 
