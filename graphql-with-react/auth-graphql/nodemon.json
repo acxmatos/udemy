@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MONGO_DB_HOST": "sandbox.6xcse.mongodb.net",
+    "MONGO_DB_DATABASE": "udemy-graphql-course"
+  }
+}
